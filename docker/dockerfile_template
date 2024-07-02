@@ -1,0 +1,7 @@
+FROM python:latest
+
+WORKDIR /exec/
+
+COPY {source_file} /exec/
+
+CMD ["python", "{source_file}"]
