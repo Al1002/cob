@@ -1,7 +1,8 @@
-from fastapi import FastAPI, UploadFile, Body
+from fastapi import FastAPI, UploadFile, Body, HTTPException
 from pydantic import BaseModel
 from typing_extensions import Annotated
 import os # file operations
+from pathlib import Path # path concatenation and code clarity
 
 save_directory = "/home/sasho_b/Coding/cob/web_server"
 
@@ -13,10 +14,6 @@ app = FastAPI()
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
-
-@app.get("/id/{id}")
-async def id_method(id: int):
-    return {"message": id}
 
 def validate_upload_file(upload: UploadFile):
     if(upload.size > 1024*1024*5):
@@ -38,18 +35,46 @@ def save_upload_file(dir: str, upload: UploadFile):
         upload.file.close()    
     return None
 
-@app.post("/upload_code/{username}")
-def upload(username: str, upload: UploadFile):
+@app.post("/{username}/code")
+def post_code(username: str, upload: UploadFile):
     
     error = validate_upload_file(upload)
     if error:
-        return {"message": f"The file is invalid", "details": error}
+        raise HTTPException(
+            status_code=400,
+            detail=error,
+            headers={"msg": "The file is invalid"}
+            )    
     
     error = save_upload_file(save_directory + "/" + username, upload)
     if error:
-        return {"message": f"There was an error uploading '{upload.filename}' to user '{username}'", "details": error}
+        raise HTTPException(
+            status_code=400,
+            detail=error,
+            headers={"msg": f"There was an error uploading '{upload.filename}' to user '{username}'"}
+            )
     
     return {"message": f"Successfully uploaded '{upload.filename}' to user '{username}'"}
+
+@app.get("/{username}/code")
+def get_code(username: str):
+    return os.listdir(Path(save_directory, username))
+
+@app.post("/{username}/run/{filename}")
+def run_code(username: str, filename: str):
+    if not os.path.isdir(Path(save_directory,username)):
+        raise HTTPException(
+            status_code=400,
+            detail="User does not exist",
+            headers={"msg": "Couldnt run code"}
+            )
+    if not os.path.exists(Path(save_directory,username,filename)):
+        raise HTTPException(
+            status_code=400,
+            detail="File does not exist",
+            headers={"msg": "Couldnt run code"}
+            )
+
 
 if __name__ == "__main__":
     pass
