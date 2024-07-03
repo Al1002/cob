@@ -3,31 +3,33 @@ from pydantic import BaseModel
 from typing_extensions import Annotated
 import os # file operations
 from pathlib import Path # path concatenation and code clarity
+import build_container
 
-save_directory = "/home/sasho_b/Coding/cob/web_server"
-
-class Code(BaseModel):
-    file_name: str
+user_directory = "/home/sasho_b/Coding/cob/web_server/users"
 
 app = FastAPI()
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return "<p>This is COB webserver<\p>"
+
 
 def validate_upload_file(upload: UploadFile):
-    if(upload.size > 1024*1024*5):
+    valid_upload_suffix = (".py")
+    if upload.size > 1024*1024*5:
         return "Filesize exceeds 5MB"
-    if(upload.filename == None):
+    if upload.filename == None:
         return "File doesnt have a name"
+    if not upload.filename.endswith(valid_upload_suffix):
+        return "File type not allowed"
     return None
 
-def save_upload_file(dir: str, upload: UploadFile):
+def save_upload_file(upload_dir: Path, upload: UploadFile):
     contents = upload.file.read() # read() does all the memory mumbo-jumbo
-    if not os.path.exists(dir):
-        os.makedirs(dir)
+    if not os.path.exists(upload_dir):
+        os.makedirs(upload_dir)
     try:
-        f = open(dir + "/" + upload.filename, 'w+b')
+        f = open(Path(upload_dir, upload.filename), 'w+b')
         f.write(contents)
     except Exception:
         return "Couldnt write to file"
@@ -39,15 +41,15 @@ def save_upload_file(dir: str, upload: UploadFile):
 def post_code(username: str, upload: UploadFile):
     
     error = validate_upload_file(upload)
-    if error:
+    if error != None:
         raise HTTPException(
             status_code=400,
             detail=error,
             headers={"msg": "The file is invalid"}
             )    
     
-    error = save_upload_file(save_directory + "/" + username, upload)
-    if error:
+    error = save_upload_file(Path(user_directory, username), upload)
+    if error != None:
         raise HTTPException(
             status_code=400,
             detail=error,
@@ -58,23 +60,27 @@ def post_code(username: str, upload: UploadFile):
 
 @app.get("/{username}/code")
 def get_code(username: str):
-    return os.listdir(Path(save_directory, username))
+    return {
+        "message": f"Files for user '{username}'",
+        "files": os.listdir(Path(user_directory, username))
+        }
 
 @app.post("/{username}/run/{filename}")
 def run_code(username: str, filename: str):
-    if not os.path.isdir(Path(save_directory,username)):
+    if not os.path.isdir(Path(user_directory,username)):
         raise HTTPException(
             status_code=400,
             detail="User does not exist",
             headers={"msg": "Couldnt run code"}
             )
-    if not os.path.exists(Path(save_directory,username,filename)):
+    if not os.path.exists(Path(user_directory,username,filename)):
         raise HTTPException(
             status_code=400,
             detail="File does not exist",
             headers={"msg": "Couldnt run code"}
             )
-    
+    result = build_container.run_code(Path(user_directory,username,filename))
+    return {"result": result}
 
 if __name__ == "__main__":
-    pass
+    run_code("john_doe", "hello.py")

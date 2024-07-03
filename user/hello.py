@@ -3,4 +3,4 @@ def factoriel(num: int):
         return 1
     return num * factoriel(num-1)
 print('Hello world!')
-print(factoriel(13))
+print(factoriel(6))
