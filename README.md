@@ -11,6 +11,8 @@ The web server is written in python with FastAPI.
 
 It depends on docker's python api.
 
+If you want a deeper understanding, check out the ```docs``` folder for documentation
+
 ### How do I run it?
 
 1. Download the repo using
