@@ -1,7 +1,7 @@
-FROM python:latest
+FROM python
 
-WORKDIR /exec/
+WORKDIR /exec
 
-COPY {source_file} /exec/
+COPY {source_file} /exec
 
-CMD ["python", "{source_file}"]
+CMD ["python","{source_file}"]

@@ -23,7 +23,7 @@ It depends on docker's python api.
 
 3. Run the web server using
 ```fastapi run web_server/fast.py```
-Note: the default port fir the server is 8000, if its occupied, use the ```--port XXXX``` flag to change it
+Note: the default port for the server is 8000, if its occupied, use the ```--port XXXX``` flag to change it
 
 4. Checkout the ```user/main.py``` script for example usage
 
