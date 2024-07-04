@@ -40,7 +40,7 @@ def save_upload_file(upload_dir: Path, upload: UploadFile):
 
 @app.get("/")
 async def root():
-    return "<p>This is COB webserver<\p>"
+    return "<p>This is COB webserver. More info at [https://github.com/Al1002/cob]<\p>"
 
 @app.post("/{username}/code")
 def upload_file(username: str, upload: UploadFile):
