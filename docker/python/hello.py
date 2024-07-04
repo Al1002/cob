@@ -1,6 +1,5 @@
-def factoriel(num: int):
-    if num == 1:
-        return 1
-    return num * factoriel(num-1)
-print('Hello world!')
-print(factoriel(6))
+r = ""
+for i in range(1,100):
+    for j in range(1,100):
+        r+=str(i%j)
+print(r)

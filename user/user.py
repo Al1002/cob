@@ -23,13 +23,16 @@ def run():
     pr = requests.get(url+"/john_doe/result/"+r.json()["uuid"])
     while(pr.json().get('result') == None):
         pr = requests.get(url+"/john_doe/result/"+r.json()["uuid"])
-        time.sleep(5)
-    print(pr.json()["result"])
+        time.sleep(0.5)
+    with open(root+"/result.txt", 'w+') as file:
+        file.write(pr.text)
+        file.close()
 
 def get():
     endpoint = "/john_doe/code"
     r = requests.get(url + endpoint)
     print(r.text)
+    
 
 if __name__ == "__main__":
     upload()
