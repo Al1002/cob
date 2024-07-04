@@ -69,9 +69,10 @@ class ContainerManager:
         container.remove(force=True)
         image.remove(force=True)
         return result
-    
+
     # runs a project and saves its output to a database, along with an identifier for retrieval
     def container_output_to_db(self, entry_file: Path, id: uuid.UUID) -> None:
+        
         result = self.run_project(entry_file, source_dir=None)
         db_interface.save_results({'uuid': id, "result": result})
 

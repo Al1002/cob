@@ -114,6 +114,10 @@ def get_result(username: str, uuid: str):
         return {"message": "Result not ready or does not exist"}
     return {"result": result}
 
+@app.delete("/{username}/code/{filename}")
+def remove_file():
+    pass
+
 if __name__ == "__main__":
     id =run_code("john_doe", "hello.py")
     print(get_result("john_doe",id['uuid']))
