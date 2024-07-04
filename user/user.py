@@ -1,5 +1,6 @@
 import requests
 import json
+import time
 
 url = 'http://127.0.0.1:3000'
 root = "/home/sasho_b/Coding/cob/user"
@@ -19,7 +20,11 @@ def run():
     endpoint = "/john_doe/run/hello.py"
     r = requests.post(url + endpoint) # files= keyarg is specially turned into form-data
     print(r.text)
-    print(r.json()["result"])
+    pr = requests.get(url+"/john_doe/result/"+r.json()["uuid"])
+    while(pr.json().get('result') == None):
+        pr = requests.get(url+"/john_doe/result/"+r.json()["uuid"])
+        time.sleep(5)
+    print(pr.json()["result"])
 
 def get():
     endpoint = "/john_doe/code"

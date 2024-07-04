@@ -20,9 +20,6 @@ def build_image(source_file: Path, template_file: Path, build_dir: Path):
     copyfile(source_file, Path(build_dir, source_file.name))
     return client.images.build(path=str(Path(root,"python")), rm=True)[0] # rm=True OR IT BREAKS!
 
-def remove_image(image):
-    client.images.remove(image=image.id)
-
 def build_container(image):
     return client.containers.create(image.id)
 
@@ -31,16 +28,14 @@ def run_container(container):
     container.wait()
     return container.logs().decode()
 
-def remove_container(container):
-    container.remove()
 
 def run_code(source_file: Path):
     build_dir = Path(root, "python")
     image = build_image(source_file, template_file, build_dir)
     container = build_container(image)
     result = run_container(container)
-    remove_container(container)
-    remove_image(image)
+    container.remove(force=True)
+    image.remove(force=True)
     return result
 
 if __name__ == "__main__":

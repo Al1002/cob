@@ -21,10 +21,12 @@ If you want a deeper understanding, check out the ```docs``` folder for document
 2. Download the relevant dependencies with pip 
 ```pip install fastapi```
 ```pip install docker```
+
 (you could put them in a venv if needed)
 
 3. Run the web server using
 ```fastapi run web_server/fast.py```
+
 Note: the default port for the server is 8000, if its occupied, use the ```--port XXXX``` flag to change it
 
 4. Checkout the ```user/main.py``` script for example usage
