@@ -12,11 +12,15 @@ class DBInterface:
     def save_result(self, result: str):
         self.results.insert_one(result)
     
-    def get_result(self, uuid: uuid.UUID) -> None | str:
+    def result_exists(self, uuid: uuid.UUID) -> bool:
+        result_entry = self.results.find_one({"uuid": uuid})
+        return result_entry != None
+        
+    def get_result(self, uuid: uuid.UUID) -> None | dict:
         result_entry = self.results.find_one({"uuid": uuid})
         if result_entry == None:
             return None
-        return result_entry['result']
+        return result_entry
 
 # This is added so that many files can reuse the function get_database()
 if __name__ == "__main__":   

@@ -7,13 +7,13 @@ from pathlib import Path # path concatenation and code clarity
 import uuid # for db/ticket system
 from threading import Thread # independent runing of containers
 
-from build_container import ContainerManager
 from db_interface import DBInterface
 
-USER_DIRECTORY = "/home/sasho_b/Coding/cob/users"
+import user_manager
+from projects_web_interface import project_router
 
 app = FastAPI()
-
+app.include_router(project_router)
 
 def validate_upload_file(upload: UploadFile):
     valid_upload_suffix = (".py")
@@ -46,19 +46,11 @@ async def root():
 def upload_file(username: str, upload: UploadFile):
     error = validate_upload_file(upload)
     if error != None:
-        raise HTTPException(
-            status_code=400,
-                detail=error,
-            headers={"msg": "The file is invalid"}
-        )
+        raise HTTPException(400, detail=error, headers={"msg": "The file is invalid"})
     
     error = save_upload_file(Path(USER_DIRECTORY, username), upload)
     if error != None:
-        raise HTTPException(
-            status_code=400,
-            detail=error,
-            headers={"msg": f"There was an error uploading '{upload.filename}' to user '{username}'"}
-        )
+        raise HTTPException(400,detail=error,headers={"msg": f"There was an error uploading '{upload.filename}' to user '{username}'"})
     
     return {"message": f"Successfully uploaded '{upload.filename}' to user '{username}'"}
 
@@ -104,15 +96,18 @@ def run_code(username: str, filename: str):
             detail="File does not exist",
             headers={"msg": "Couldnt run code"}
             )
-    id = ContainerManager.run_project(Path(USER_DIRECTORY,username,filename), source_dir=None, build_dir=Path(USER_DIRECTORY,username))
+    id = 
     return {"uuid":id}
 
 @app.get("/{username}/result/{uuid}")
 def get_result(username: str, uuid: str):
     result = DBInterface.get_result(uuid)
     if result == None:
-        return {"message": "Result not ready or does not exist"}
-    return {"result": result}
+        raise HTTPException(400, "Result does not exist")
+    if result['status'] == "running":
+        return {"msg":"Waiting for result"}
+    if result['status'] == "done":
+        return {"result":result['result']}
 
 @app.delete("/{username}/code/{filename}")
 def remove_file():
@@ -121,3 +116,6 @@ def remove_file():
 if __name__ == "__main__":
     id =run_code("john_doe", "hello.py")
     print(get_result("john_doe",id['uuid']))
+    
+    
+
