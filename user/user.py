@@ -7,7 +7,7 @@ root = "/home/sasho_b/Coding/cob/user"
 file_name = 'hello.py'
 
 def upload():
-    endpoint = "/john_doe/code"
+    endpoint = "/user/john_doe/project/myproject"
     r = None
     with open(root+"/"+file_name, 'rb') as file:
         files = {'upload': (file_name, file, 'text/plain')}
@@ -17,24 +17,23 @@ def upload():
     print(r.text)
 
 def run():
-    endpoint = "/john_doe/run/hello.py"
+    endpoint = "/user/john_doe/project/myproject/run"
     r = requests.post(url + endpoint) # files= keyarg is specially turned into form-data
     print(r.text)
-    pr = requests.get(url+"/john_doe/result/"+r.json()["uuid"])
+    pr = requests.get(url+endpoint+"?uuid="+r.json()["uuid"])
     while(pr.json().get('result') == None):
-        pr = requests.get(url+"/john_doe/result/"+r.json()["uuid"])
+        pr = requests.get(url+endpoint+"?uuid="+r.json()["uuid"])
         time.sleep(0.5)
     with open(root+"/result.txt", 'w+') as file:
         file.write(pr.text)
         file.close()
 
 def get():
-    endpoint = "/john_doe/code"
+    endpoint = "/user/john_doe/project/myproject/run"
     r = requests.get(url + endpoint)
     print(r.text)
     
 
 if __name__ == "__main__":
     upload()
-    get()
     run()
