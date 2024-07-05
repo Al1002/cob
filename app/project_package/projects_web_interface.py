@@ -4,7 +4,7 @@ from typing_extensions import Annotated, Union
 import os
 from pathlib import Path
 
-import user_manager
+import app.user_package.user_manager as user_manager
 import project_package.project_manager as project_manager
 from db_package import DBInterface
 

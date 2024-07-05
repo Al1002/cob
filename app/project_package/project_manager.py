@@ -5,7 +5,7 @@ from threading import Thread
 
 from containerizer import ContainerManager
 from db_package import DBInterface
-import user_manager
+import app.user_package.user_manager as user_manager
 
 def get_project_dir(user: str, project: str) -> Path:
     return Path(user_manager.get_user_dir(user), project)

@@ -11,3 +11,4 @@ def user_exists(name: str) -> bool:
 
 def create_user(name: str):
     os.mkdir(get_user_dir(name))
+
