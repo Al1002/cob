@@ -12,7 +12,6 @@ app.include_router(project_router)
 async def root():
     return "<p>This is COB webserver. More info at [https://github.com/Al1002/cob]<\p>"
 
-
 if __name__ == "__main__":
     pass
 
