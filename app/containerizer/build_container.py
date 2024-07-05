@@ -20,7 +20,7 @@ def fillout_template(
     template = ''
     with open(docker_template, 'r') as file:
         template = file.read()
-        template = template.replace('{source_file}', entry_file.name)
+        template = template.replace('{entry_file}', entry_file.name)
     with open(Path(output_dir,"Dockerfile"), "w+") as save_to:
         save_to.write(template)
 
@@ -31,7 +31,6 @@ def prepare_build_directory(
     build_dir: Path
     ) -> None:
     fillout_template(entry_file, source_dir, build_dir)
-    copyfile(entry_file, Path(build_dir,entry_file.name))
 
 # s.e.
 def build_image(
@@ -40,7 +39,7 @@ def build_image(
     build_dir: Path
     ):
     prepare_build_directory(entry_file, source_dir, build_dir)
-    image = CLIENT.images.build(path=str(Path(ROOT, "python")), rm=True)[0] # rm=True OR IT BREAKS!
+    image = CLIENT.images.build(path=str(build_dir), rm=True)[0] # rm=True OR IT BREAKS!
     return image
 
 # s.e.
@@ -57,8 +56,10 @@ def run_container( container):
 def run_project(
     entry_file: Path,
     source_dir: Path,
-    build_dir: Path = Path(ROOT,"python"),
+    build_dir: Path | None = None,
     ):
+    if build_dir == None:
+        build_dir = source_dir
     image = build_image(entry_file, source_dir, build_dir)
     container = build_container(image)
     result = run_container(container)
