@@ -82,5 +82,8 @@ def run_project(user: str, project: str):
 def get_result(user: str, project: str, uuid: Union[str | None] = None):
     result = DBInterface.get_result(uuid)
     if result == None:
-        return {"msg": "Result not ready or does not exist"}
-    return {"result": result['result']}
+        raise HTTPException(400, "Result not does not exist")
+    if result['status'] == 'running':
+        return {"msg": "Waiting for result"}
+    if result['status'] == 'done':
+        return {"result": result['result']}

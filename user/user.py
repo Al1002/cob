@@ -24,6 +24,7 @@ def run():
     while(pr.json().get('result') == None):
         pr = requests.get(url+endpoint+"?uuid="+r.json()["uuid"])
         time.sleep(0.5)
+    print("Writing result")
     with open(root+"/result.txt", 'w+') as file:
         file.write(pr.text)
         file.close()
