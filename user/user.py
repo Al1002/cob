@@ -2,6 +2,8 @@ import requests
 import json
 import time
 
+#TODO: export endpoints to file/table/db
+
 url = 'http://127.0.0.1:3000'
 root = "/home/sasho_b/Coding/cob/user"
 file_name = 'hello.py'
@@ -17,22 +19,23 @@ def upload():
     print(r.text)
 
 def run():
-    endpoint = "/john_doe/run/hello.py"
+    endpoint = "/john_doe/run/hello.py" 
     r = requests.post(url + endpoint) # files= keyarg is specially turned into form-data
     print(r.text)
     pr = requests.get(url+"/john_doe/result/"+r.json()["uuid"])
     while(pr.json().get('result') == None):
         pr = requests.get(url+"/john_doe/result/"+r.json()["uuid"])
-        time.sleep(0.5)
+        time.sleep(0.1)
     with open(root+"/result.txt", 'w+') as file:
         file.write(pr.text)
+        print("Result in 'result.txt'")
         file.close()
 
 def get():
     endpoint = "/john_doe/code"
     r = requests.get(url + endpoint)
     print(r.text)
-    
+
 
 if __name__ == "__main__":
     upload()

@@ -4,10 +4,11 @@ from typing_extensions import Annotated # For complex function signatures
 from typing import List                 #
 import os # file operations
 from pathlib import Path # path concatenation and code clarity
-import build_container
 import uuid # for db/ticket system
 from threading import Thread # independent runing of containers
+
 import db_interface
+import build_container
 
 user_directory = "/home/sasho_b/Coding/cob/web_server/users"
 
@@ -29,14 +30,15 @@ async def root():
     return "<p>This is COB webserver<\p>"
 
 def validate_upload_file(upload: UploadFile):
-    valid_upload_suffix = (".py")
     if upload.size > 1024*1024*5:
         return "Filesize exceeds 5MB"
+    
     if upload.filename == None:
         return "File doesnt have a name"
+    
+    valid_upload_suffix = (".py")
     if not upload.filename.endswith(valid_upload_suffix):
         return "File type not allowed"
-    return None
 
 def save_upload_file(upload_dir: Path, upload: UploadFile):
     contents = upload.file.read() # read() does all the memory mumbo-jumbo
@@ -53,19 +55,19 @@ def save_upload_file(upload_dir: Path, upload: UploadFile):
 
 @app.post("/{username}/code")
 def upload_file(username: str, upload: UploadFile):
-    error = validate_upload_file(upload)
-    if error != None:
+    error_validation = validate_upload_file(upload)
+    if error_validation != None:
         raise HTTPException(
             status_code=400,
-                detail=error,
+            detail=error_validation,
             headers={"msg": "The file is invalid"}
         )
     
-    error = save_upload_file(Path(user_directory, username), upload)
-    if error != None:
+    error_upload = save_upload_file(Path(user_directory, username), upload)
+    if error_upload != None:
         raise HTTPException(
             status_code=400,
-            detail=error,
+            detail=error_upload,
             headers={"msg": f"There was an error uploading '{upload.filename}' to user '{username}'"}
         )
     

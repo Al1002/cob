@@ -26,7 +26,6 @@ if __name__ == "__main__":
     # Get the database
     db = get_database()
     collection = db["user_files"]
-    
     result = collection.insert_one({'file.txt': "This is a file"}, False, None, "This is a comment")
     print(result)
     print(get_result_table().find_one({"uuid": "794c6a2e-64be-47c1-af78-d6e9550ac5ee"}))
