@@ -9,4 +9,3 @@ import project_package.project_manager as project_manager
 from db_package import DBInterface
 
 user_router = APIRouter()
-

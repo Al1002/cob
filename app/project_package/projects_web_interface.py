@@ -4,7 +4,7 @@ from typing_extensions import Annotated, Union
 import os
 from pathlib import Path
 
-import app.user_package.user_manager as user_manager
+import user_package.user_manager as user_manager
 import project_package.project_manager as project_manager
 from db_package import DBInterface
 
@@ -30,7 +30,7 @@ def create_project(user: str, project: ProjectCreationRequest):
     return {"msg": f"Project '{project.name}' created"}
 
 #list of user projects
-#@project_router.get("/user/{user}")
+@project_router.get("/user/{user}")
 
 def validate_upload_file(upload: UploadFile):
     valid_upload_suffix = (".py")
