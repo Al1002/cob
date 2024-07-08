@@ -4,4 +4,4 @@ WORKDIR /exec
 
 COPY . /exec
 
-CMD ["python","{entry_file}"]
+CMD ["python","main.py"]
