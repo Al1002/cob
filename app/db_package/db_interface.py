@@ -16,7 +16,7 @@ def result_exists(uuid: uuid.UUID) -> bool:
     return result_entry != None
     
 def get_result(uuid: uuid.UUID) -> None | dict:
-    result_entry = results.find_one({"uuid": uuid})
+    result_entry = results.find_one({"uuid": str(uuid)})
     if result_entry == None:
         return None
     return result_entry

@@ -62,7 +62,7 @@ def upload_file(user: str, project: str, upload: UploadFile):
     if error != None:
         raise HTTPException(400, detail=error, headers={"msg": "The file is invalid"})
     
-    error = save_upload_file(user_manager.get_user_dir(user), upload)
+    error = save_upload_file(Path(user_manager.get_user_dir(user), project), upload)
     if error != None:
         raise HTTPException(500,detail=error,headers={"msg": f"There was an error uploading '{upload.filename}' to user '{user}'"})
     
@@ -75,7 +75,7 @@ def upload_file(user: str, project: str, upload: UploadFile):
 @project_router.post("/user/{user}/project/{project}/run")
 def run_project(user: str, project: str):
     id = project_manager.run_project_detached(user, project)
-    return {"msg":"Project started", "uuid": id}
+    return {"msg":"Project started", "uuid": str(id)}
 
 #runing state; result
 @project_router.get("/user/{user}/project/{project}/run")
@@ -87,3 +87,6 @@ def get_result(user: str, project: str, uuid: Union[str | None] = None):
         return {"msg": "Waiting for result"}
     if result['status'] == 'done':
         return {"result": result['result']}
+
+if __name__ == '__main__':
+    run_project("john_doe", "myproject")

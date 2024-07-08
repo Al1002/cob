@@ -1,8 +1,6 @@
 import docker
 
 from pathlib import Path
-from shutil import copyfile
-from threading import Thread
 
 ROOT = Path("/home/sasho_b/Coding/cob/docker")
 DOCKER_TEMPLATE = Path(ROOT, "dockerfile_template")

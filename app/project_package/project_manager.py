@@ -25,15 +25,17 @@ def get_project_entry_file(user: str, project: str)->Path:
 def project_output_to_db(entry_file: Path, source_dir: Path, id: uuid.UUID) -> None:
     DBInterface.save_result({'uuid': str(id), "status": "running"})
     result = ContainerManager.run_project(entry_file, source_dir)
-    DBInterface.results.update_one({'uuid': str(id)}, {"$set":{"status": "done", "result": result}})
+    print(DBInterface.results.update_one({'uuid': str(id)}, {"$set":{"status": "done", "result": result}}))
 
 # runs a project in a separate thread. returns an identifier for retrieval
 def run_project_detached(user: str, project: str) -> uuid.UUID:
     id = uuid.uuid4()
     entry_file = get_project_entry_file(user, project)
-    thread = Thread(target=project_output_to_db, args=[entry_file, user_manager.get_user_dir(user), id])
+    thread = Thread(target=project_output_to_db, args=[entry_file, Path(user_manager.get_user_dir(user), project), id])
     thread.daemon = False
     thread.start()
+    thread.join()
     return id
 
-
+if __name__ == "__main__":
+    run_project_detached("john_doe", 'myproject')

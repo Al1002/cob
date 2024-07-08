@@ -6,7 +6,7 @@ import time
 
 url = 'http://127.0.0.1:3000'
 root = "/home/sasho_b/Coding/cob/user"
-file_name = 'hello.py'
+file_name = 'main.py'
 
 def upload():
     endpoint = "/user/john_doe/project/myproject"
