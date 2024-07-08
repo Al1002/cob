@@ -30,7 +30,7 @@ def create_project(user: str, project: ProjectCreationRequest):
     return {"msg": f"Project '{project.name}' created"}
 
 #list of user projects
-@project_router.get("/user/{user}")
+#@project_router.get("/user/{user}")
 
 def validate_upload_file(upload: UploadFile):
     valid_upload_suffix = (".py")

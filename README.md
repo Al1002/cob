@@ -6,7 +6,7 @@ COB is a web service which accepts user code, prepares it, and runs it in an iso
 
 ### What is COB comprised of?
 
-COB is comprised of a web server and a script to run containers.
+COB is comprised of a web server, mongodb, and a script to run containers.
 
 The web server is written in python with FastAPI.
 
@@ -25,16 +25,18 @@ If you want a deeper understanding, check out the ```docs``` folder for document
 
 (you could put them in a venv if needed)
 
-3. Run the web server using
+3. Set up mongodb and replace the connection string in ```app/db_package/db_interface.py``` with your own.
+
+4. Run the web server using
 ```fastapi run web_server/fast.py```
 
 Note: the default port for the server is 8000, if its occupied, use the ```--port XXXX``` flag to change it
 
-4. Checkout the ```user/main.py``` script for example usage
+5. Checkout the ```user/main.py``` script for example usage
 
 ### How can I contribute?
 
 Contact me at aleksandriliev05@gmail.com if you wish to contribute, give suggestions, new ideas, or aid the project in any way.
 
-
+UPDATE: as of jul 8 2024 (08.07.2024), this current repository is defunct.
 

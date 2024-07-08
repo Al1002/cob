@@ -1,5 +1,7 @@
 This file is a technical introduction to COB - a web service which executes user code
 
+As of 08.07.2024, this file is out of date.
+
 1. Components
 The app is separated into 2 parts - the thing that handles web requests and the thing that runs containers - `fast.py` and `build_container.py` respectively
 
@@ -11,13 +13,9 @@ The users are simply directories in `web_server/users`.
 Endpoints expect 3 things - headers, querry parameters, and body. (Explained well in the [FastAPI documentation](https://fastapi.tiangolo.com/tutorial/))
 Results are usually in a json/application format.
 
+The endpoints are listed in the automatic swagger documentation provided by FastAPI. 
 
-GET /{user}/code - returns a list of user files
-
-POST /{user}/code - expects a file attachment called "upload", with a python script file (must end with .py), and puts it in the user folder.
-
-POST /{user}/run/{filename} - executes the apropriate file from the user's folder and returns
-a response with the result (the stdout, i.e. printed text) using `build_container.py`
+Generaly, the units the app deals with are users, projects, and files. 
 
 1.b `build_container.py`
 Manages docker containers and images. Requires the python docker api ([docs here](https://docker-py.readthedocs.io/en/stable/)).
@@ -29,7 +27,4 @@ The image and container are deleted and the stdout (i.e. where print() writes to
 
 2. User
 Currently there is no user interface. There exists a folder `user` which contains example python code to make requests and test the main app.
-Adendum:
-
-In future, the results will instead be saved to a DB rather than having to wait for the HTTP response.
 
